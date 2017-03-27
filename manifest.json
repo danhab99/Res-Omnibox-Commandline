@@ -15,5 +15,4 @@
   },
   "omnibox": { "keyword" : "res" },
   "permissions": ["tabs", "storage"],
-  "options_page": "options.html"
 }

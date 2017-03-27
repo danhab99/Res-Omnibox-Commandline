@@ -1,5 +1,4 @@
 var TRANSPARENT_MODE = false;
-var username;
 var suggest_source;
 
 // This event is fired each time the user updates the text in the omnibox,
@@ -11,28 +10,7 @@ function(text, suggest)
 	Reccomend(prepare(text), suggest);
 });					 
 // This event is fired with the user accepts the input in the omnibox.
-chrome.omnibox.onInputEntered.addListener(
-function(text)
-{
-	chrome.storage.sync.get("username",
-		function(obj)
-		{
-			username = obj.username;
-		});
-	
-	if (username == null)
-	{
-		var u = prompt("Please enter your username");
-		username = u;
-		
-		chrome.storage.sync.set({
-			username: u,
-		  },
-		  function() {
-			alert("Your username has been saved \nYou can change your username by typing 'settings' into the RES command");
-		  });
-	}
-	
+chrome.omnibox.onInputEntered.addListener(	
 	Do(prepare(text));
 });
 
@@ -71,9 +49,6 @@ function Reccomend(text, suggest)
 				reccomend("Go to a users multireddit", "user: " + text[1] + " multi: " + text[3]);
 			}
 			break;
-		case "settings":
-			recomend("Go to settings");
- 			break;
 		case "help":
 			recomend("Open to help page");
 			break;
@@ -89,13 +64,16 @@ function Do(text)
 	console.log(text);
 	switch(text[0])
 	{
-		case text[0] == "m" && text.length == 1:
-			//Open mail
-			openBlank("message/unread/");
-			break;
 		case "m":
-			//Open my multireddit
-			openMulti(username, text[1]);
+			if(text[1] != "")
+			{
+				//Open my multireddit
+				openMe("/m/" + text[1]);
+			}
+			else
+			{
+				openBlank("message/unread/");
+			}
 			break;
 		case "mm":
 			//Open modmail
@@ -146,38 +124,38 @@ function me(subs)
 	switch(sw)
 	{
 		case 1:
-			openUser(username);
+			openMe();
 			break;
 		case 2:
 			switch(subs[1])
 			{
 				case "s":
 				case "saved":
-					openUser(username + "/saved");
+					openMe("/saved");
 					break;
 				case "sub":
 				case "submitted":
-					openUser(username + "/submitted");
+					openMe("/submitted");
 					break;
 				case "c":
 				case "comments":
-					openUser(username + "/comments");
+					openMe("/comments");
 					break;
 				case "g":
 				case "gilded":
-					openUser(username + "/gilded");
+					openMe("/gilded");
 					break;
 				case "l":
 				case "liked":
-					openUser(username + "/liked");
+					openMe("/liked");
 					break;
 				case "d":
 				case "disliked":
-					openUser(username + "/disliked");
+					openMe("/disliked");
 					break;
 				case "h":
 				case "hidden":
-					openUser(username + "/hidden");
+					openMe("/hidden");
 					break;
 			}
 			break;
@@ -229,6 +207,11 @@ function openSub(r)
 function openMulti(u, m)
 {
 	openBlank("u/" + u + "/m/" + m);
+}
+
+function openMe(ext)
+{
+	openUser("me/" + ext); 
 }
 
 function recomend(c)
