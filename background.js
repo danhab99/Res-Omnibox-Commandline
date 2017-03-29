@@ -10,7 +10,9 @@ function(text, suggest)
 	Reccomend(prepare(text), suggest);
 });					 
 // This event is fired with the user accepts the input in the omnibox.
-chrome.omnibox.onInputEntered.addListener(	
+chrome.omnibox.onInputEntered.addListener(
+function(text)
+{
 	Do(prepare(text));
 });
 
@@ -55,6 +57,13 @@ function Reccomend(text, suggest)
 		case "discuss":
 			recomend("Go to this extension's subreddit");
 			break;
+		case "f":
+		case "front":
+			reccomend("Go to front page");
+			break;
+		case "source":
+			reccomend("Go to source page on GitHub");
+			break;
 	}	
 }
 
@@ -65,7 +74,7 @@ function Do(text)
 	switch(text[0])
 	{
 		case "m":
-			if(text[1] != "")
+			if(text.length >= 2)
 			{
 				//Open my multireddit
 				openMe("/m/" + text[1]);
@@ -98,9 +107,6 @@ function Do(text)
 				openBlank("u/" + text[1] + "m/" + text[3]);
 			}
 			break;
-		case "settings":
-			chrome.runtime.openOptionsPage();
- 			break;
 		case "help":
 			//alert("Not yet implimented");
 			openBlank("r/RESOmniLine/wiki/index");
@@ -108,6 +114,13 @@ function Do(text)
 		case "discuss":
 			openSub("RESOmniLine");
 			//openSub("OmniboxRES");
+			break;
+		case "f":
+		case "front":
+			openBlank("");
+			break;
+		case "source":
+			chrome.tabs.create({ url: "https://github.com/danhab99/Res-Omnibox-Commandline" });
 			break;
 		
 		default:
@@ -165,17 +178,6 @@ function me(subs)
 	}
 }
 
-//Loads Username
-function restore_options() {
-  // Use default value color = 'red' and likesColor = true.
-  chrome.storage.sync.get({
-    username: '',
-  }, function(items) {
-    username = items.username;
-  });
-}
-document.addEventListener('DOMContentLoaded', restore_options);
-
 //These components are for simplified use
 function prepare(text)
 {
@@ -211,7 +213,14 @@ function openMulti(u, m)
 
 function openMe(ext)
 {
-	openUser("me/" + ext); 
+	if(ext != undefined)
+	{
+		openUser("me/" + ext); 
+	}
+	else
+	{
+		openUser("me");
+	}
 }
 
 function recomend(c)
@@ -225,4 +234,26 @@ function reccomend(c, d)
 	suggest_source([
             { content: c, description: d }
         ]);
+}
+
+function quickMessage(data)
+{
+	var to = data[1];
+	var body;
+	
+	for (var i = 0; i > data.length - 2; i++)
+	{
+		body = body + data[i] + "%20";	
+	}
+	
+	openBlank("message/compose?to=" + to + "&subject=&message=" + body);
+}
+
+function post(data)
+{
+	var sub = data[1];
+	var title = data[2];
+	var url = data[3];
+	
+	openBlank("r/" + sub + "/submit?title=" + title + "&url=" + url);
 }
