@@ -2,7 +2,7 @@
   "name": "RES Omnibox CommandLine",
   "short_name": "RES Omniline",
   "description" : "To use, type 'res' to trigger a psudo RES commandline in the omnibox.",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "manifest_version": 2,
   "background": {
 	  "persistent": false,
