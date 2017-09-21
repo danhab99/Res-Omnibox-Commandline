@@ -125,7 +125,18 @@ function Do(text)
 		case "source":
 			chrome.tabs.create({ url: "https://github.com/danhab99/Res-Omnibox-Commandline" });
 			break;
-		
+		case "qm":
+			if (text.length  == 1) {
+				openBlank("message/compose/");
+			}
+			else if (text.length == 2){
+				//message/compose/?to=[USERNAME]&subject=[SUBJECT]
+				openBlank("message/compose/?to=" + text[1]);
+			}
+			else if (text.length == 3){
+				openBlank("message/compose/?to=" + text[1] + "&subject=" + text[2]);
+			}
+			break;
 		default:
 			var l = "Error: (" + text + ")";
 			alert(l);
