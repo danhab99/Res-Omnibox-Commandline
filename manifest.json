@@ -9,11 +9,9 @@
 	  "scripts": ["background.js"]
   },
   "icons": {
-	  "16": "icons2/icon16.png",
-	  "48": "icons2/icon48.png",
-	  "64": "icons2/icon64.png",
-	  "128": "icons2/icon128.png",
-	  "1024": "icons2/icon1024.png"
+	  "16": "icon16.png",
+	  "48": "icon48.png",
+	  "64": "icon64.png"
   },
   "omnibox": { "keyword" : "res" },
   "permissions": ["tabs", "storage"]
