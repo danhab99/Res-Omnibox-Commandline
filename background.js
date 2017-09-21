@@ -8,7 +8,7 @@ function(text, suggest)
 {
 	suggest_source = suggest;
 	Reccomend(prepare(text), suggest);
-});					 
+});
 // This event is fired with the user accepts the input in the omnibox.
 chrome.omnibox.onInputEntered.addListener(
 function(text)
@@ -64,7 +64,10 @@ function Reccomend(text, suggest)
 		case "source":
 			reccomend("Go to source page on GitHub");
 			break;
-	}	
+		case "qm":
+			reccomend("Send a quick message");
+			break;
+	}
 }
 
 //Do
@@ -215,7 +218,7 @@ function openMe(ext)
 {
 	if(ext != undefined)
 	{
-		openUser("me/" + ext); 
+		openUser("me/" + ext);
 	}
 	else
 	{
@@ -243,7 +246,7 @@ function quickMessage(data)
 	
 	for (var i = 0; i > data.length - 2; i++)
 	{
-		body = body + data[i] + "%20";	
+		body = body + data[i] + "%20";
 	}
 	
 	openBlank("message/compose?to=" + to + "&subject=&message=" + body);
