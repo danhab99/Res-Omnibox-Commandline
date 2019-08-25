@@ -1,84 +1,4 @@
 
-// This event is fired each time the user updates the text in the omnibox,
-// as long as the extension's keyword mode is still active.
-chrome.omnibox.onInputChanged.addListener(
-function(text, suggest)
-{
-	text = text.split('/')
-	if (text[0] == 'r') {
-		suggest('	Go to a specific subreddit')
-		return
-	}
-	if (text[0] == 'u') {
-		suggest('Go to a specific user')
-		return
-	}
-	if (text[0] == 'm' && text[1] != '') {
-		suggest('Go to your multireddit')
-		return
-	}
-	if (text[0] == 'm') {
-		suggest('Go to messages')
-		return
-	}
-	if (text[0] == 'mm') {
-		suggest('Go to modmail')
-		return
-	}
-
-	let isMe = text[0] == 'me'
-	let mecompare = param => text[1] == param[1] || text[1] == param
-	if (isMe && text[1] == 'sub' || text[1] == 'submissions') {
-		suggest('Go to your submissions')
-		return
-	}
-	if (isMe && mecompare('saved')) {
-		suggest('Go to your saves')
-		return
-	}
-	if (isMe && mecompare('comments')) {
-		suggest('Go to your comments')
-		return
-	}
-	if (isMe && mecompare('gilded')) {
-		suggest('Go to your gilded')
-		return
-	}
-	if (isMe && mecompare('likes')) {
-		suggest('Go to your likes')
-		return
-	}
-	if (isMe && mecompare('dislikes')) {
-		suggest('Go to your dislikes')
-		return
-	}
-	if (isMe && mecompare('hidden')) {
-		suggest('Go to posts you hid')
-		return
-	}
-
-	if (text[0] == 'post') {
-		suggest('Submit a new post')
-		return
-	}
-	if (text[0] == 'qm') {
-		suggest('Sends a quick message to a user')
-		return
-	}
-	if (text[0] == 'help') {
-		suggest('Go to the help page')
-		return
-	}
-	if (text[0] == 'discuss') {
-		suggest('Go to r/RESOmniLine')
-		return
-	}
-	if (text[0] == 'source') {
-		suggest("Go to the extension's source")
-		return
-	}
-});
-
 const openReddit = (endpoint, args) => {
 	// TODO: Implement args
 	let url = 'https://reddit.com/' + endpoint.join('/')
@@ -92,7 +12,22 @@ const openReddit = (endpoint, args) => {
 }
 
 const openPage = url => {
-	// TODO: Figure out how to do settings
+	chrome.storage.sync.get(
+		{
+			newTab: true
+		},
+		function(items) {
+			if (items.newTab) {
+				chrome.tabs.create({ url: url});
+			}
+			else {
+				chrome.tabs.getSelected(null, tab => {			
+					//Update the url here.
+					chrome.tabs.update(tab.id, {url: url});
+				});
+			}
+		}
+	);
 }
 
 // This event is fired with the user accepts the input in the omnibox.
